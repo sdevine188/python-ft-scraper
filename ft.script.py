@@ -5,11 +5,6 @@ from lxml import html, etree
 import requests
 import re
 
-## ft api key
-## url is http://api.ft.com/content/insert.article.id.here?apiKey=
-## article id is everything from last forward slash to ".html" in url
-## url to webpage with hyperlinks to today's articles is "http://www.ft.com/intl/international-edition"
-
 ## enter api key as string
 api_key =
 
