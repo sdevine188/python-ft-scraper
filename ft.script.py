@@ -4,12 +4,12 @@ __author__ = 'Steve'
 from lxml import html, etree
 import requests
 import re
+import time
 
 ## enter api key as string
-api_key =
+api_key = "hNIqHozr1JA4f2mU0uDZA2GkZfVzhpQC"
 
 ## fetch and parse html
-url = "http://www.ft.com/intl/international-edition"
 page = requests.get("http://www.ft.com/intl/international-edition")
 tree = etree.HTML(page.text)
 
@@ -28,20 +28,48 @@ editorial_links = tree.xpath("""//div[@class = 'feedBox']/h4/a[contains(text(), 
 ## compile all the section links into one list
 section_links = front_links + world_links + analysis_links + notebook_links + editorial_links
 
+## create variables for total number of articles and range of each section's article count
+total_articles = len(section_links) + 1
+
+range_front = range(len(front_links))
+range_world = range(range_front[-1] + 1, range_front[-1] + 1 + len(world_links))
+range_analysis = range(range_world[-1] + 1, range_world[-1] + 1 + len(analysis_links))
+range_notebook = range(range_analysis[-1] + 1, range_analysis[-1] + 1 + len(notebook_links))
+range_editorial = range(range_notebook[-1] + 1, range_notebook[-1] + 1 + len(editorial_links))
+
 ## fetch articles from each section of the paper and append to text file
 text = []
 
-for i in section_links:
-        article_id = i[(i.rfind("/")+1) : i.rfind(".html")]
+for i in range(len(section_links)):
+        article = section_links[i]
+        article_number = i + 1
+        
+        article_section = ""
+        if i in range_front:
+                article_section = "Front section"
+        elif i in range_world:
+                article_section = "World Section"
+        elif i in range_analysis:
+                article_section = "Analysis Section"
+        elif i in range_notebook:
+                article_section = "Notebook Section"
+        elif i in range_editorial:
+                article_section = "Editorial Section"
+        print(article_section)
+
+        print(article)
+        article_id = article[(article.rfind("/")+1) : article.rfind(".html")]
         article_url = "http://api.ft.com/content/" + article_id + "?apiKey=" + api_key
         article_page = requests.get(article_url)
         article_page = article_page.json()
         article_body = article_page["bodyXML"]
         article_text1 = re.sub(r"<.*?>", "", article_body)
-        ##article_text2 = re.sub(r"\n", "", article_text1)
-        ##article_text3 = re.sub(r"\u2009", "", article_text3)
-        article_text3 = article_text1 + "{{split}}"
-        text.append(article_text3.encode("utf8"))
+        article_text2 = "The Financial Times - {section} - article number {number} of {total}. ".format(section = article_section, 
+                number = article_number, total = total_articles) + article_text1 + "{{split}}"
+        text.append(article_text2.encode("utf8"))
 
 open_file = open("ft_text.txt", "wb")
 open_file.writelines(text)
+print("ft_text.txt created")
+
+
