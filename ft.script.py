@@ -4,7 +4,6 @@ __author__ = 'Steve'
 from lxml import html, etree
 import requests
 import re
-import time
 
 ## enter api key as string
 api_key = "hNIqHozr1JA4f2mU0uDZA2GkZfVzhpQC"
@@ -31,11 +30,17 @@ section_links = front_links + world_links + analysis_links + notebook_links + ed
 ## create variables for total number of articles and range of each section's article count
 total_articles = len(section_links) + 1
 
+# range_front = range(len(front_links))
+# range_world = range(range_front[-1] + 1, range_front[-1] + 1 + len(world_links))
+# range_analysis = range(range_world[-1] + 1, range_world[-1] + 1 + len(analysis_links))
+# range_notebook = range(range_analysis[-1] + 1, range_analysis[-1] + 1 + len(notebook_links))
+# range_editorial = range(range_notebook[-1] + 1, range_notebook[-1] + 1 + len(editorial_links))
+
 range_front = range(len(front_links))
 range_world = range(range_front[-1] + 1, range_front[-1] + 1 + len(world_links))
-range_analysis = range(range_world[-1] + 1, range_world[-1] + 1 + len(analysis_links))
-range_notebook = range(range_analysis[-1] + 1, range_analysis[-1] + 1 + len(notebook_links))
-range_editorial = range(range_notebook[-1] + 1, range_notebook[-1] + 1 + len(editorial_links))
+range_analysis = range(range_front[-1] + 1 + len(world_links), range_front[-1] + 1 + len(world_links) + len(analysis_links))
+range_notebook = range(range_front[-1] + 1 + len(world_links) + len(analysis_links), range_front[-1] + 1 + len(world_links) + len(analysis_links) + len(notebook_links))
+range_editorial = range(range_front[-1] + 1 + len(world_links) + len(analysis_links) + len(notebook_links),     range_front[-1] + 1 + len(world_links) + len(analysis_links) + len(notebook_links) + len(editorial_links))
 
 ## fetch articles from each section of the paper and append to text file
 text = []
