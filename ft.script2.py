@@ -7,9 +7,10 @@ import re
 import os
 
 # set working directory
-%cd c://users//stephen//desktop//python
+#%cd c://users//stephen//desktop//python
 #%ls
 #%pwd
+os.chdir("c:/users/stephen/desktop/python/python-ft-scraper")
 
 ## enter api key as string
 api_key = "hNIqHozr1JA4f2mU0uDZA2GkZfVzhpQC"
@@ -207,5 +208,6 @@ for i in range(len(section_links)):
 open_file = open("ft_text.txt", "wb")
 open_file.writelines(text)
 print("ft_text.txt created")
+open_file.close()
 
 
