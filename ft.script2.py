@@ -197,14 +197,18 @@ for i in range(len(section_links)):
         print(article)
         article_id = article[(article.rfind("/")+1) : article.rfind(".html")]
         article_url = "http://api.ft.com/content/" + article_id + "?apiKey=" + api_key
-        article_page = requests.get(article_url)
-        article_page = article_page.json()
-        article_body = article_page["bodyXML"]
-        article_text1 = re.sub(r"<.*?>", "", article_body)
-        article_text2 = "The Financial Times - {section} - article number {number} of {total}. ".format(section = article_section, 
-                number = article_number, total = total_articles) + article_text1 + "{{split}}"
-        text.append(article_text2.encode("utf8"))
-
+        print(article_url)
+        try:
+	        article_page = requests.get(article_url)
+	        article_page = article_page.json()
+	        article_body = article_page["bodyXML"]
+	        article_text1 = re.sub(r"<.*?>", "", article_body)
+	        article_text2 = "The Financial Times - {section} - article number {number} of {total}. ".format(section = article_section, 
+	                number = article_number, total = total_articles) + article_text1 + "{{split}}"
+	        text.append(article_text2.encode("utf8"))
+        except:
+        	continue
+        	
 open_file = open("ft_text.txt", "wb")
 open_file.writelines(text)
 print("ft_text.txt created")
