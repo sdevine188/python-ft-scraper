@@ -4,6 +4,17 @@ __author__ = 'Steve'
 from lxml import html, etree
 import requests
 import re
+import os
+
+## set working directory
+# %pwd
+# %ls
+# %cd ..
+# magic command doesn't work because of dashes in folder name
+# works on folium folder though
+# %cd C:\Users\Stephen\desktop\python\python-ft-scraper 
+# %cd C:\Users\Stephen\desktop\python\folium
+os.chdir("C:\\Users\\Stephen\\desktop\\python\\python-ft-scraper")
 
 ## enter api key as string
 api_key = "hNIqHozr1JA4f2mU0uDZA2GkZfVzhpQC"
@@ -15,7 +26,7 @@ tree = etree.HTML(page.text)
 ## gather links from each section of the paper
 front_links = tree.xpath("""//div[@class = 'feedBox']/h4/a[contains(text(), 'Front Page & Second Front')]/
         ../../ul/li/a/@href""")
-world_links = tree.xpath("""//div[@class = 'feedBox']/h4/a[contains(text(), 'World')]/
+world_links = tree.xpath("""//div[@class = 'feedBox']/h4/a[contains(text(), 'International')]/
         ../../ul/li/a/@href""")
 analysis_links = tree.xpath("""//div[@class = 'feedBox']/h4/a[contains(text(), 'Analysis')]/
         ../../ul/li/a/@href""")
@@ -29,12 +40,6 @@ section_links = front_links + world_links + analysis_links + notebook_links + ed
 
 ## create variables for total number of articles and range of each section's article count
 total_articles = len(section_links) + 1
-
-# range_front = range(len(front_links))
-# range_world = range(range_front[-1] + 1, range_front[-1] + 1 + len(world_links))
-# range_analysis = range(range_world[-1] + 1, range_world[-1] + 1 + len(analysis_links))
-# range_notebook = range(range_analysis[-1] + 1, range_analysis[-1] + 1 + len(notebook_links))
-# range_editorial = range(range_notebook[-1] + 1, range_notebook[-1] + 1 + len(editorial_links))
 
 range_front = range(len(front_links))
 range_world = range(range_front[-1] + 1, range_front[-1] + 1 + len(world_links))
@@ -63,15 +68,21 @@ for i in range(len(section_links)):
         print(article_section)
 
         print(article)
-        article_id = article[(article.rfind("/")+1) : article.rfind(".html")]
-        article_url = "http://api.ft.com/content/" + article_id + "?apiKey=" + api_key
-        article_page = requests.get(article_url)
-        article_page = article_page.json()
-        article_body = article_page["bodyXML"]
-        article_text1 = re.sub(r"<.*?>", "", article_body)
-        article_text2 = "The Financial Times - {section} - article number {number} of {total}. ".format(section = article_section, 
-                number = article_number, total = total_articles) + article_text1 + "{{split}}"
-        text.append(article_text2.encode("utf8"))
+        
+        try:        
+            article_id = article[(article.rfind("/")+1) : article.rfind(".html")]
+            article_url = "http://api.ft.com/content/" + article_id + "?apiKey=" + api_key
+            article_page = requests.get(article_url)
+            article_page = article_page.json()
+            article_body = article_page["bodyXML"]
+            article_text1 = re.sub(r"<.*?>", "", article_body)
+            article_text2 = "The Financial Times - {section} - article number {number} of {total}. ".format(section = article_section, 
+                    number = article_number, total = total_articles) + article_text1 + "{{split}}"
+            text.append(article_text2.encode("utf8"))
+        
+        except:
+            print("error: article was not successfully retrieved and will be skipped")
+            continue
 
 open_file = open("ft_text.txt", "wb")
 open_file.writelines(text)
