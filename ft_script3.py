@@ -32,6 +32,7 @@ us_items_links = us_tree.xpath("""//li[@class='ft-list-item']/a/@href""")
 us_lead_links_medium = us_tree.xpath("""//h3[@class = 'ft-title ft-title-medium ft-spc-btm-qtr']/a/@href""")
 us_lead_links_large = us_tree.xpath("""//h3[@class = 'ft-title ft-title-large ft-spc-btm-qtr']/a/@href""")
 us_links = us_items_links + us_lead_links_medium + us_lead_links_large
+us_links
 
 # africa section
 s = requests.Session()
@@ -42,6 +43,7 @@ africa_items_links = africa_tree.xpath("""//li[@class='ft-list-item']/a/@href"""
 africa_lead_links_medium = africa_tree.xpath("""//h3[@class = 'ft-title ft-title-medium ft-spc-btm-qtr']/a/@href""")
 africa_lead_links_large = africa_tree.xpath("""//h3[@class = 'ft-title ft-title-large ft-spc-btm-qtr']/a/@href""")
 africa_links = africa_items_links + africa_lead_links_medium + africa_lead_links_large
+africa_links
 
 # americas section
 s = requests.Session()
@@ -52,6 +54,7 @@ americas_items_links = americas_tree.xpath("""//li[@class='ft-list-item']/a/@hre
 americas_lead_links_medium = americas_tree.xpath("""//h3[@class = 'ft-title ft-title-medium ft-spc-btm-qtr']/a/@href""")
 americas_lead_links_large = americas_tree.xpath("""//h3[@class = 'ft-title ft-title-large ft-spc-btm-qtr']/a/@href""")
 americas_links = americas_items_links + americas_lead_links_medium + americas_lead_links_large
+americas_links
 
 # asia-pacific section
 s = requests.Session()
@@ -62,6 +65,7 @@ asia_pacific_items_links = asia_pacific_tree.xpath("""//li[@class='ft-list-item'
 asia_pacific_lead_links_medium = asia_pacific_tree.xpath("""//h3[@class = 'ft-title ft-title-medium ft-spc-btm-qtr']/a/@href""")
 asia_pacific_lead_links_large = asia_pacific_tree.xpath("""//h3[@class = 'ft-title ft-title-large ft-spc-btm-qtr']/a/@href""")
 asia_pacific_links = asia_pacific_items_links + asia_pacific_lead_links_medium + asia_pacific_lead_links_large
+asia_pacific_links
 
 # europe section
 s = requests.Session()
@@ -72,6 +76,7 @@ europe_items_links = europe_tree.xpath("""//li[@class='ft-list-item']/a/@href"""
 europe_lead_links_medium = europe_tree.xpath("""//h3[@class = 'ft-title ft-title-medium ft-spc-btm-qtr']/a/@href""")
 europe_lead_links_large = europe_tree.xpath("""//h3[@class = 'ft-title ft-title-large ft-spc-btm-qtr']/a/@href""")
 europe_links = europe_items_links + europe_lead_links_medium + europe_lead_links_large
+europe_links
 
 # mideast section
 s = requests.Session()
@@ -82,6 +87,7 @@ mideast_items_links = mideast_tree.xpath("""//li[@class='ft-list-item']/a/@href"
 mideast_lead_links_medium = mideast_tree.xpath("""//h3[@class = 'ft-title ft-title-medium ft-spc-btm-qtr']/a/@href""")
 mideast_lead_links_large = mideast_tree.xpath("""//h3[@class = 'ft-title ft-title-large ft-spc-btm-qtr']/a/@href""")
 mideast_links = mideast_items_links + mideast_lead_links_medium + mideast_lead_links_large
+mideast_links 
 
 # comment section
 s = requests.Session()
@@ -110,6 +116,7 @@ for url in columnist_urls:
     if(url.find(string) > 0):
         full_url = "http://www.ft.com/cms/s/0/" + url + ".html"
         comment_links.append(full_url)
+comment_links
             
 ## compile all the section links into one list
 section_links = us_links + europe_links + asia_pacific_links + mideast_links + africa_links + americas_links + comment_links
@@ -136,12 +143,12 @@ for i in range(len(section_links)):
             article_page = article_page.json()
             if(article_page["publishedDate"][0:10] == current_date):
                 if not any(article_url in match_url for match_url in match_articles):
+                    print("match: " + article_url)
                     match_articles.append(article_url)
                     article_body = article_page["bodyXML"]
                     article_text1 = re.sub(r"<.*?>", "", article_body)
                     article_number = article_number + 1
-                    article_text2 = "The Financial Times - article number {number}. ".format(number = article_number) + 
-                        article_text1 + "{{split}}"
+                    article_text2 = "The Financial Times - article number {number}. ".format(number = article_number) + article_text1 + "{{split}}"
                     text.append(article_text2.encode("utf8"))
         except:
             continue
